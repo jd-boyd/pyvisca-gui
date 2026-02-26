@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyvisca-gui"
+version = "0.0.1"
+description = "A GUI for pyvisca camera control"
+dependencies = [
+    "pyvisca",
+    "dearpygui",
+]
+
+[project.scripts]
+pyvisca-gui = "pyvisca_gui.main:main"
+
+[tool.setuptools.packages.find]
+where = ["."]

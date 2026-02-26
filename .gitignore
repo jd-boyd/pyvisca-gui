@@ -1,0 +1,25 @@
+# Virtual Environment
+venv/
+
+# Generated TAR archives (SPAs should be in source form)
+*.tar
+*.zip
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+
+# Editor/IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+\#*
+.\#*
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
