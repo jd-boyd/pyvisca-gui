@@ -952,8 +952,8 @@ class ViscaGUI:
                     preset = key - ord("0")
                     self.recall_preset(preset)()
 
-                # Quit
-                elif key == dpg.mvKey_Escape:
+                # Quit: Ctrl+q
+                elif key == ord("q") and dpg.is_key_down(dpg.mvKey_Control):
                     self.running = False
 
             except Exception as e:
