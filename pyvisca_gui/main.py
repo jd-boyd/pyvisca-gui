@@ -667,6 +667,10 @@ class ViscaGUI:
                     label="Show Connection Window",
                     callback=lambda: self.show_window("Connection"),
                 )
+                dpg.add_menu_item(
+                    label="Show Settings Window",
+                    callback=lambda: self.show_window("Settings"),
+                )
 
         # === Pan/Tilt/Zoom Control Window ===
         with dpg.window(
@@ -722,27 +726,6 @@ class ViscaGUI:
 
             dpg.add_spacer(height=20)
 
-            # Speed controls
-            dpg.add_text("Speeds:", color=(200, 200, 200))
-            self.speed_display_label = dpg.add_text(
-                f"Pan: {self.pan_speed}  Tilt: {self.tilt_speed}  Zoom: {self.zoom_speed}  Focus: {self.focus_speed}"
-            )
-
-            with dpg.group(horizontal=True):
-                dpg.add_button(label="<", width=40, callback=self.decrease_pan_speed)
-                dpg.add_button(label=">", width=40, callback=self.increase_pan_speed)
-                dpg.add_spacer(width=10)
-                dpg.add_button(label="<", width=40, callback=self.decrease_tilt_speed)
-                dpg.add_button(label=">", width=40, callback=self.increase_tilt_speed)
-                dpg.add_spacer(width=10)
-                dpg.add_button(label="<", width=40, callback=self.decrease_zoom_speed)
-                dpg.add_button(label=">", width=40, callback=self.increase_zoom_speed)
-                dpg.add_spacer(width=10)
-                dpg.add_button(label="<", width=40, callback=self.decrease_focus_speed)
-                dpg.add_button(label=">", width=40, callback=self.increase_focus_speed)
-
-            dpg.add_spacer(height=20)
-
             # Quick actions
             dpg.add_text("Quick Actions:", color=(200, 200, 200))
             with dpg.group(horizontal=True):
@@ -787,7 +770,7 @@ class ViscaGUI:
             self.log_output = dpg.add_text("", wrap=400)
 
         # === Connection Window ===
-        with dpg.window(label="Connection", width=300, height=300, pos=(420, 420)):
+        with dpg.window(label="Connection", width=300, height=200, pos=(420, 420)):
             dpg.add_text("Connection Settings", color=(255, 255, 0), bullet=True)
             dpg.add_spacer(height=10)
 
@@ -809,26 +792,6 @@ class ViscaGUI:
 
             dpg.add_spacer(height=20)
 
-            # White balance
-            dpg.add_separator(label="White Balance")
-            with dpg.group(horizontal=True):
-                dpg.add_button(label="Auto", width=80, callback=self.white_balance_auto)
-                dpg.add_spacer(width=10)
-                dpg.add_button(
-                    label="Indoor", width=80, callback=self.white_balance_indoor
-                )
-                dpg.add_spacer(width=10)
-                dpg.add_button(
-                    label="Outdoor", width=80, callback=self.white_balance_outdoor
-                )
-
-            dpg.add_spacer(height=20)
-
-            # Autofocus
-            dpg.add_button(label="Autofocus", width=270, callback=self.autofocus)
-
-            dpg.add_spacer(height=20)
-
             # Presets
             dpg.add_separator(label="Presets")
             with dpg.group(horizontal=True):
@@ -841,6 +804,64 @@ class ViscaGUI:
                     dpg.add_button(
                         label=str(i), width=50, callback=self.recall_preset(i)
                     )
+
+        # === Settings Window ===
+        with dpg.window(label="Settings", width=350, height=450, pos=(730, 420)):
+            dpg.add_text("Settings", color=(255, 255, 0), bullet=True)
+            dpg.add_spacer(height=10)
+
+            # Speed controls
+            dpg.add_separator(label="Speed Settings")
+            dpg.add_spacer(height=10)
+
+            self.speed_display_label = dpg.add_text(
+                f"Pan: {self.pan_speed}  Tilt: {self.tilt_speed}  Zoom: {self.zoom_speed}  Focus: {self.focus_speed}"
+            )
+            dpg.add_spacer(height=10)
+
+            dpg.add_text("Pan Speed:")
+            with dpg.group(horizontal=True):
+                dpg.add_button(label="<", width=40, callback=self.decrease_pan_speed)
+                dpg.add_button(label=">", width=40, callback=self.increase_pan_speed)
+
+            dpg.add_spacer(height=10)
+            dpg.add_text("Tilt Speed:")
+            with dpg.group(horizontal=True):
+                dpg.add_button(label="<", width=40, callback=self.decrease_tilt_speed)
+                dpg.add_button(label=">", width=40, callback=self.increase_tilt_speed)
+
+            dpg.add_spacer(height=10)
+            dpg.add_text("Zoom Speed:")
+            with dpg.group(horizontal=True):
+                dpg.add_button(label="<", width=40, callback=self.decrease_zoom_speed)
+                dpg.add_button(label=">", width=40, callback=self.increase_zoom_speed)
+
+            dpg.add_spacer(height=10)
+            dpg.add_text("Focus Speed:")
+            with dpg.group(horizontal=True):
+                dpg.add_button(label="<", width=40, callback=self.decrease_focus_speed)
+                dpg.add_button(label=">", width=40, callback=self.increase_focus_speed)
+
+            dpg.add_spacer(height=20)
+
+            # White balance
+            dpg.add_separator(label="White Balance")
+            dpg.add_spacer(height=10)
+            with dpg.group(horizontal=True):
+                dpg.add_button(label="Auto", width=100, callback=self.white_balance_auto)
+                dpg.add_spacer(width=10)
+                dpg.add_button(
+                    label="Indoor", width=100, callback=self.white_balance_indoor
+                )
+                dpg.add_spacer(width=10)
+                dpg.add_button(
+                    label="Outdoor", width=100, callback=self.white_balance_outdoor
+                )
+
+            dpg.add_spacer(height=20)
+
+            # Autofocus
+            dpg.add_button(label="Autofocus", width=320, callback=self.autofocus)
 
         # === Keyboard Handler ===
 
@@ -965,53 +986,61 @@ class ViscaGUI:
                             )
                             conn_color = (200, 0, 0)
 
-                        self.status_connected_label.set_value(conn_text)
-                        self.status_connected_label.set_color(conn_color)
+                        dpg.set_value(self.status_connected_label, conn_text)
+                        dpg.set_item_color(
+                            self.status_connected_label, dpg.mvThemeCol_Text, conn_color
+                        )
 
                         if status.get("connected"):
-                            self.status_power_label.set_value(
-                                f"Power: {status.get('power', 'Unknown')}"
+                            dpg.set_value(
+                                self.status_power_label,
+                                f"Power: {status.get('power', 'Unknown')}",
                             )
-                            self.status_pan_label.set_value(
-                                f"Pan: {status.get('pan', 0)}"
+                            dpg.set_value(
+                                self.status_pan_label, f"Pan: {status.get('pan', 0)}"
                             )
-                            self.status_tilt_label.set_value(
-                                f"Tilt: {status.get('tilt', 0)}"
+                            dpg.set_value(
+                                self.status_tilt_label, f"Tilt: {status.get('tilt', 0)}"
                             )
-                            self.status_zoom_label.set_value(
-                                f"Zoom: {status.get('zoom', 0)}"
+                            dpg.set_value(
+                                self.status_zoom_label, f"Zoom: {status.get('zoom', 0)}"
                             )
-                            self.status_video_label.set_value(
-                                f"Video: {status.get('video_format', 'Unknown')}"
+                            dpg.set_value(
+                                self.status_video_label,
+                                f"Video: {status.get('video_format', 'Unknown')}",
                             )
-                            self.status_ae_label.set_value(
-                                f"AE: {status.get('ae_mode', 'Unknown')}"
+                            dpg.set_value(
+                                self.status_ae_label,
+                                f"AE: {status.get('ae_mode', 'Unknown')}",
                             )
-                            self.status_wb_label.set_value(
-                                f"WB: {status.get('white_balance', 'Unknown')}"
+                            dpg.set_value(
+                                self.status_wb_label,
+                                f"WB: {status.get('white_balance', 'Unknown')}",
                             )
 
                             # Update speed display
-                            self.speed_pan_label.set_value(
-                                f"Pan: {status.get('pan_speed', 0)}"
+                            dpg.set_value(
+                                self.speed_pan_label, f"Pan: {status.get('pan_speed', 0)}"
                             )
-                            self.speed_tilt_label.set_value(
-                                f"Tilt: {status.get('tilt_speed', 0)}"
+                            dpg.set_value(
+                                self.speed_tilt_label,
+                                f"Tilt: {status.get('tilt_speed', 0)}",
                             )
-                            self.speed_zoom_label.set_value(
-                                f"Zoom: {status.get('zoom_speed', 0)}"
+                            dpg.set_value(
+                                self.speed_zoom_label, f"Zoom: {status.get('zoom_speed', 0)}"
                             )
-                            self.speed_focus_label.set_value(
-                                f"Focus: {status.get('focus_speed', 0)}"
+                            dpg.set_value(
+                                self.speed_focus_label,
+                                f"Focus: {status.get('focus_speed', 0)}",
                             )
 
-                        self.status_message_label.set_value(
-                            f"Status: {self.status_message}"
+                        dpg.set_value(
+                            self.status_message_label, f"Status: {self.status_message}"
                         )
 
                         # Update log
                         log_text = "\n".join(self.log_messages[-30:])
-                        self.log_output.set_value(log_text)
+                        dpg.set_value(self.log_output, log_text)
 
                     self.check_incoming_messages()
                     self.check_movement_timeout()
@@ -1019,7 +1048,7 @@ class ViscaGUI:
                     # Update speeds in PTZ window
                     dpg.set_value(
                         self.speed_display_label,
-                        f"Pan: {self.pan_speed}  Tilt: {self.tilt_speed}  Zoom: {self.zoom_speed}  Focus: {self.focus_speed}"
+                        f"Pan: {self.pan_speed}  Tilt: {self.tilt_speed}  Zoom: {self.zoom_speed}  Focus: {self.focus_speed}",
                     )
 
                 except Exception:
